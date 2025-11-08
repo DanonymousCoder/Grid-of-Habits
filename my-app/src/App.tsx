@@ -10,6 +10,9 @@ function App() {
   const [habits, setHabits] = useState([]);
   const [newHabitName, setNewHabitName] = useState('');
   const [inputValue, setInputValue] = useState("");
+  const [value, setValue] = useState("");
+  const [expandHabits, setExpandHabits] = useState(false);
+  const [count, setCount] = useState(0);
 
   const habitExample = {
     id: 1234567890,
@@ -52,18 +55,68 @@ function App() {
       </nav>
 
       <main>
+
+      <div className={`moreHabitInfo ${expandHabits ? "moreHabitInfo-flex" : ''}`}>
+        <div className='active'>
+          <img />
+          <div className='text'>
+            <p className='head'>Active Habits</p>
+            <p>{count}</p>
+          </div>
+        </div>
+        <div className='tracking'>
+          <img />
+
+          <div className='text'>
+            <p className='head'>Tracking Period</p>
+            <p>30Days</p>
+          </div>
+        </div>
+        <div className='streak'>
+          <img />
+
+          <div className='text'>
+            <p className='head'>Longest Streak</p>
+            <p>1</p>
+          </div>
+        </div>
+      </ div>
+
        <div className='habits'>
         <HabitsButton 
           newHabitClick = {newHabitClick}
           setNewHabitClick = {setNewHabitClick}
           inputValue = {inputValue}
-          setInputValue = {setInputValue} />
+          setInputValue = {setInputValue}
+          expandHabits = {expandHabits}
+          setExpandHabits = {setExpandHabits}
+          setCount = {setCount} />
        </div>
 
        <div className='habits-track'>
         <img />
         <p className='head'>No habits yet</p>
         <p>Add your first habit to start tracking your progress</p>
+       </div>
+
+       <div className='habit-graphs'>
+          <div className='habit-graph'>
+            <div className='left'>
+              <h5>Habit Name</h5>
+              <p className='streak-p'> Streak: <span>0</span></p>
+              <p className='streak-c'>Completion rate: <span>0.00%</span></p>
+            </div>
+
+            <div className='graph-main'>
+              <div className='box'></div>
+              <div className='box'></div>
+              <div className='box'></div>
+              <div className='box'></div>
+              <div className='box'></div>
+              <div className='box'></div>
+              <div className='box'></div>
+            </div>
+          </div>
        </div>
 
        <footer>
@@ -81,23 +134,47 @@ type HabitsButtonProps = {
   setNewHabitClick: React.Dispatch<React.SetStateAction<boolean>>;
   inputValue: string;
   setInputValue: React.Dispatch<React.SetStateAction<string>>;
+  expandHabits: boolean;
+  setExpandHabits: React.Dispatch<React.SetStateAction<boolean>>;
+  setCount: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const HabitsButton: React.FC<HabitsButtonProps> = ({newHabitClick, setNewHabitClick, inputValue, setInputValue}) => {
+const HabitsButton: React.FC<HabitsButtonProps> = ({newHabitClick, setNewHabitClick, inputValue, setInputValue, expandHabits, setExpandHabits, setCount}) => {
   return  !newHabitClick ? <button className='new-habits' onClick={() => setNewHabitClick(true)}><span>+</span> Add new Habits</button> 
-  : <InputHabit setNewHabitClick = {setNewHabitClick} value = {inputValue} onChange = {(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)} /> ;
+  : <InputHabit setNewHabitClick = {setNewHabitClick} inputValue = {inputValue} setInputValue = {setInputValue} expandHabits = {expandHabits} setExpandHabits = {setExpandHabits} setCount = {setCount} /> ;
 };
 
 
 type InputHabitProps = {
   setNewHabitClick: React.Dispatch<React.SetStateAction<boolean>>;
+  setInputValue: React.Dispatch<React.SetStateAction<string>>;
+  inputValue: string;
+  setExpandHabits: React.Dispatch<React.SetStateAction<boolean>>;
+  expandHabits: boolean;
+  setCount: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const InputHabit: React.FC<InputHabitProps> = ({ setNewHabitClick }) => {
+const InputHabit: React.FC<InputHabitProps> = ({ setNewHabitClick, setInputValue, inputValue, setExpandHabits, setCount }) => {
+
+  const handleAddHabit = () => {
+    const habit = document.createElement("div");
+    const habitName = document.createElement("p");
+    habitName.textContent = inputValue;
+
+    habit.appendChild(habitName);
+
+    console.log(habit);
+
+    setExpandHabits(true);
+    setCount(prev => prev + 1);
+  }
+
   return (
     <div className='input-habit'>
-      <input placeholder='Enter habit name (e.g, Read, Exercise, Meditate)' />
-      <button className='add-btn'>Add</button>
+      <input placeholder='Enter habit name (e.g, Read, Exercise, Meditate)' 
+      value = {inputValue}
+      onChange={e =>setInputValue(e.target.value) } />
+      <button className='add-btn' onClick = {handleAddHabit}>Add</button>
       <button className = 'cancel-input' onClick={() => setNewHabitClick(false)}>Cancel</button>
     </div>
   )
