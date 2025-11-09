@@ -219,7 +219,9 @@ input:focus {
 }
 
 .habit-graph {
-  
+  background-color: #2c2828;
+  padding: 2em;
+  border-radius: 10px;
 }
 
 .left {
@@ -228,10 +230,12 @@ input:focus {
   'logo logo'
   'streak completion';
   gap: .5em;
+  width: 300px;
 }
 
 .left h5 {
   grid-area: logo;
+  font-size: 2rem;
 }
 
 .streak-p {
@@ -244,14 +248,33 @@ input:focus {
 
 .graph-main {
   display: grid;
-  grid-template-rows: repeat(1fr);
+  grid-template-columns: 1fr 16fr;
+  padding: 2em;
   gap: .15em;
+  margin-top: 2em;
+  background-color: #420d0d;
+  border-radius: 10px;
+}
+
+.days {
+  display: flex;
+  flex-direction: column;
+  gap: .5em;
+}
+
+.boxes {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background-color: #00FFFF;
+  border-radius: 10px;
+  padding: 1em;
+  gap: .25em;
 }
 
 .box {
   background-color: #F0F0F0;
-  height: 10px;
-  width: 10px;
+  max-height: 15px;
+  max-width: 15px;
 }
 
 footer p {

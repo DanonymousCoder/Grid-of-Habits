@@ -108,13 +108,52 @@ function App() {
             </div>
 
             <div className='graph-main'>
-              <div className='box'></div>
-              <div className='box'></div>
-              <div className='box'></div>
-              <div className='box'></div>
-              <div className='box'></div>
-              <div className='box'></div>
-              <div className='box'></div>
+              <div className='days'>
+                <p>M</p>
+                <p>T</p>
+                <p>W</p>
+                <p>T</p>
+                <p>F</p>
+                <p>S</p>
+                <p>S</p>
+              </div>
+              <div className='boxes'>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+                <div className='box'></div>
+              </div>
             </div>
           </div>
        </div>
