@@ -216,12 +216,23 @@ input:focus {
 
 .habit-graphs {
   width: 100%;
+  display: none;
 }
 
 .habit-graph {
   background-color: #2c2828;
   padding: 2em;
   border-radius: 10px;
+}
+
+.habit-graph .top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.trash {
+  cursor: pointer;
 }
 
 .left {
@@ -283,6 +294,15 @@ footer p {
   margin-bottom: 1.5em;
 }
 
+
+
+.none {
+  display: none;
+}
+
+.unset {
+  display: unset;
+}
 
 
 @media (max-width: 500px) {

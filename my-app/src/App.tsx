@@ -1,18 +1,17 @@
 import React from 'react';
 import {useState} from 'react';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Trash2, Calendar, TrendingUp, Award } from 'lucide-react';
 import './App.css';
 
 function App() {
 
   const [darkMode, setDarkMode] = useState(true);
   const [newHabitClick, setNewHabitClick] = useState(false);
-  const [habits, setHabits] = useState([]);
-  const [newHabitName, setNewHabitName] = useState('');
   const [inputValue, setInputValue] = useState("");
-  const [value, setValue] = useState("");
   const [expandHabits, setExpandHabits] = useState(false);
   const [count, setCount] = useState(0);
+  const [hideHabitGraph, setHideHabitGraph] = useState(false);
+  const [habits, setHabits] = useState<habitType[]>([]);
 
   const habitExample = {
     id: 1234567890,
@@ -24,21 +23,59 @@ function App() {
     }
   };
 
-  const addhabit = () => {}
-
   const getLast30Days = () => {
     const days = [];
 
-    for (let i = 30; i >= 0; i--) {
+    for (let i = 29; i >= 0; i--) {
       const date = new Date();
       date.setDate(date.getDate() - i);
       days.push(date.toISOString().split('T')[0]);
     }
 
     return days;
-  }
+  };
 
   const days = getLast30Days();
+
+  const toggleDay = (habitId: number, date: string) => {
+    setHabits(habits.map(habit => {
+      if (habit.id === habitId) {
+        const newCompletedDays = { ...habit.completedDays};
+
+        if (newCompletedDays[date]) {
+          delete newCompletedDays[date];
+        } else {
+          newCompletedDays[date] = true;
+        }
+
+        return {...habit, completedDays: newCompletedDays};
+      }
+
+      return habit;
+    }));
+  };
+
+ const getStreak = (habit: habitType) => {
+    let streak = 0;
+
+    for (let i = 0; i < days.length; i++) {
+      const date = days[(days.length - 1) - i ];
+
+      if (habit.completedDays[date]) {
+        streak ++;
+      } else {
+        break;
+      }
+    }
+
+    return streak;
+  };
+
+  const getCompletedRate = (habit: habitType) => {
+    const completed = Object.keys(habit.completedDays).length;
+    return Math.round((completed / days.length) * 100);
+  }
+
 
   return (
     <div className={`container ${darkMode === true ? '' : "container-light"}`}>
@@ -56,16 +93,16 @@ function App() {
 
       <main>
 
-      <div className={`moreHabitInfo ${expandHabits ? "moreHabitInfo-flex" : ''}`}>
+      <div className={`moreHabitInfo ${expandHabits ? "moreHabitInfo-flex" : ''} ${count ? '' : 'none' }`}>
         <div className='active'>
-          <img />
+          <TrendingUp />
           <div className='text'>
             <p className='head'>Active Habits</p>
             <p>{count}</p>
           </div>
         </div>
         <div className='tracking'>
-          <img />
+          <Calendar />
 
           <div className='text'>
             <p className='head'>Tracking Period</p>
@@ -73,7 +110,7 @@ function App() {
           </div>
         </div>
         <div className='streak'>
-          <img />
+          <Award />
 
           <div className='text'>
             <p className='head'>Longest Streak</p>
@@ -90,21 +127,30 @@ function App() {
           setInputValue = {setInputValue}
           expandHabits = {expandHabits}
           setExpandHabits = {setExpandHabits}
-          setCount = {setCount} />
+          setCount = {setCount}
+          habits = {habits}
+          setHabits = {setHabits} />
        </div>
 
-       <div className='habits-track'>
-        <img />
+       <div className={`habits-track ${count ? 'none' : ''}`}>
+        <TrendingUp />
         <p className='head'>No habits yet</p>
         <p>Add your first habit to start tracking your progress</p>
        </div>
 
-       <div className='habit-graphs'>
-          <div className='habit-graph'>
-            <div className='left'>
-              <h5>Habit Name</h5>
-              <p className='streak-p'> Streak: <span>0</span></p>
-              <p className='streak-c'>Completion rate: <span>0.00%</span></p>
+       <div className={`habit-graphs ${expandHabits ? 'unset' : ''}`}>
+          <div className={`habit-graph ${hideHabitGraph ? 'none' : ''}`}>
+            <div className='top'>
+              <div className='left'>
+              <h5>{inputValue}</h5>
+              <p className='streak-p'> Streak: <span>{habits.length > 0 ? getStreak(habits[habits.length - 1]) : 0}</span></p>
+              <p className='streak-c'>Completion rate: <span>{habits.length > 0 ? getCompletedRate(habits[habits.length -1]): 0}%</span></p>
+            </div>
+
+            <Trash2 className='trash' onClick={() => {
+              setHideHabitGraph(true);
+              setCount(count - 1);
+            }}  />
             </div>
 
             <div className='graph-main'>
@@ -168,6 +214,12 @@ function App() {
 }
 
 
+type habitType = {
+  id: number;
+  name: string;
+  completedDays: {[date : string] : boolean};
+}
+
 type HabitsButtonProps = {
   newHabitClick: boolean;
   setNewHabitClick: React.Dispatch<React.SetStateAction<boolean>>;
@@ -176,11 +228,13 @@ type HabitsButtonProps = {
   expandHabits: boolean;
   setExpandHabits: React.Dispatch<React.SetStateAction<boolean>>;
   setCount: React.Dispatch<React.SetStateAction<number>>;
+  habits: habitType[];
+  setHabits: React.Dispatch<React.SetStateAction<habitType[]>>;
 };
 
-const HabitsButton: React.FC<HabitsButtonProps> = ({newHabitClick, setNewHabitClick, inputValue, setInputValue, expandHabits, setExpandHabits, setCount}) => {
+const HabitsButton: React.FC<HabitsButtonProps> = ({newHabitClick, setNewHabitClick, inputValue, setInputValue, expandHabits, setExpandHabits, setCount, habits, setHabits}) => {
   return  !newHabitClick ? <button className='new-habits' onClick={() => setNewHabitClick(true)}><span>+</span> Add new Habits</button> 
-  : <InputHabit setNewHabitClick = {setNewHabitClick} inputValue = {inputValue} setInputValue = {setInputValue} expandHabits = {expandHabits} setExpandHabits = {setExpandHabits} setCount = {setCount} /> ;
+  : <InputHabit setNewHabitClick = {setNewHabitClick} inputValue = {inputValue} setInputValue = {setInputValue} expandHabits = {expandHabits} setExpandHabits = {setExpandHabits} setCount = {setCount} habits = {habits} setHabits = {setHabits} /> ;
 };
 
 
@@ -191,21 +245,37 @@ type InputHabitProps = {
   setExpandHabits: React.Dispatch<React.SetStateAction<boolean>>;
   expandHabits: boolean;
   setCount: React.Dispatch<React.SetStateAction<number>>;
+  habits: habitType[];
+  setHabits: React.Dispatch<React.SetStateAction<habitType[]>>;
 };
 
-const InputHabit: React.FC<InputHabitProps> = ({ setNewHabitClick, setInputValue, inputValue, setExpandHabits, setCount }) => {
+const InputHabit: React.FC<InputHabitProps> = ({ setNewHabitClick, setInputValue, inputValue, setExpandHabits, setCount, habits, setHabits }) => {
 
   const handleAddHabit = () => {
+    if (inputValue.trim()) {
+      setCount(prev => prev + 1);
+
+      const newHabit = {
+        id: Date.now(),
+        name: inputValue.trim(),
+        completedDays: {},
+      }
+
+      setHabits([...habits, newHabit]);
+      setInputValue('');
+      setExpandHabits(true);
+    }
+
+    /* 
     const habit = document.createElement("div");
     const habitName = document.createElement("p");
     habitName.textContent = inputValue;
 
     habit.appendChild(habitName);
-
-    console.log(habit);
-
-    setExpandHabits(true);
+    
     setCount(prev => prev + 1);
+    if (inputValue !== '') setExpandHabits(true);
+    */
   }
 
   return (
