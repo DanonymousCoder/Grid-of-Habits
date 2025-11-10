@@ -35,7 +35,7 @@ function App() {
     }
   }, [habits, isInitialized]);
 
-  
+
   useEffect(() => {
     if (isInitialized) {
       localStorage.setItem('habitgrid-darkmode', darkMode ? 'true' : 'false');
@@ -88,12 +88,16 @@ function App() {
 
   const getStreak = (habit: habitType) => {
     let streak = 0;
-
-    for (let i = 0; i < days.length; i++) {
-      const date = days[(days.length - 1) - i];
-
-      if (habit.completedDays[date]) {
+    const today = new Date().toISOString().split('T')[0];
+    
+    let currentDate = new Date();
+    
+    while (true) {
+      const dateStr = currentDate.toISOString().split('T')[0];
+      
+      if (habit.completedDays[dateStr]) {
         streak++;
+        currentDate.setDate(currentDate.getDate() - 1);
       } else {
         break;
       }
