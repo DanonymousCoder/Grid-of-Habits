@@ -88,7 +88,7 @@ function App() {
 
   const getStreak = (habit: habitType) => {
     let streak = 0;
-    const today = new Date().toISOString().split('T')[0];
+    // const today = new Date().toISOString().split('T')[0];
     
     let currentDate = new Date();
     
